@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      path:
+        type: string
+        description: "Path to the code to run checks on"
+        required: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          version-file: "${{ inputs.path }}/pyproject.toml"
+
+      - name: Ruff lint
+        run: |
+          cd ${{ inputs.path }} && ruff check .
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          version-file: "${{ inputs.path }}/pyproject.toml"
+
+      - name: Ruff format check
+        run: |
+          cd ${{ inputs.path }} && ruff format . --check
+
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install pyright
+        run: |
+          cd ${{ inputs.path }}
+          uv sync --no-dev
+          uv pip install pyright
+
+      - name: Run pyright
+        run: |
+          cd ${{ inputs.path }}
+          uv run pyright .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install pytest
+        run: |
+          cd ${{ inputs.path }}
+          uv sync --no-dev
+          uv pip install pytest
+
+      - name: Run [pytest]
+        run: |
+          cd ${{ inputs.path }}
+          uv run pytest --suppress-no-test-exit-code

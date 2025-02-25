@@ -1,0 +1,32 @@
+[project]
+name = "spacecases"
+version = "0.1.0"
+description = "SpaceCases discord bot"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp==3.11.11",
+    "asyncpg==0.30.0",
+    "asyncpg-stubs==0.30.0",
+    "discord.py==2.4.0",
+    "marisa-trie==1.2.1",
+    "python-dotenv==1.0.1",
+    "requests==2.32.3",
+    "types-requests==2.32.0.20241016",
+    "common",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.8.4",
+    "pytest==8.3.5",
+    "pytest-custom-exit-code==0.3.0",
+    "pyright==1.1.396",
+]
+
+[tool.uv.workspace]
+members = ["../common"]
+
+[tool.uv.sources]
+common = { workspace = true }
+

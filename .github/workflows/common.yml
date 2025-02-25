@@ -1,0 +1,13 @@
+name: Common CI/CD
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  checks:
+    uses: Spacerulerwill/SpaceCases/.github/workflows/checks.yml@master
+    with:
+      path: "common"

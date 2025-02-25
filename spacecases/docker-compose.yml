@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:17
+    container_name: spacecases-db
+    environment:
+      - POSTGRES_USER=spacecases
+      - POSTGRES_PASSWORD=spacecases
+      - POSTGRES_DB=spacecases
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  spacecases:
+    image: spacecases:latest
+    container_name: spacecases
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OWNER_ID=${OWNER_ID}
+      - DB_USER=spacecases
+      - DB_PASSWORD=spacecases
+      - DB_NAME=spacecases
+      - DB_HOST=db
+      - DB_PORT=5432
+      - ASSETS_DOMAIN=https://assets.spacecases.xyz
+      - LEADERBOARDS_DOMAIN=http://nginx:80
+    volumes:
+        - bot_sync_markers:/app/spacecases/synced
+        - ./:/app/spacecases
+    depends_on:
+      - db
+
+  leaderboards:
+    image: spacecases-leaderboards:latest
+    container_name: spacecases-leaderboards
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ASSET_DOMAIN=https://assets.spacecases.xyz
+      - DB_USER=spacecases
+      - DB_PASSWORD=spacecases
+      - DB_NAME=spacecases
+      - DB_HOST=db
+      - DB_PORT=5432
+    volumes:
+      - leaderboards_data:/app/services/leaderboards/output
+      - ../services/leaderboards:/app/services/leaderboards
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: spacecases-nginx
+    volumes:
+      - leaderboards_data:/usr/share/nginx/html
+    depends_on:
+      - leaderboards
+
+volumes:
+  postgres_data:
+  leaderboards_data:
+  bot_sync_markers:

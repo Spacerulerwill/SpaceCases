@@ -1,0 +1,23 @@
+[project]
+name = "common"
+version = "0.1.0"
+description = "Common functionality shared across SpaceCases projects"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "discord.py==2.4.0",
+    "pydantic==2.10.4",
+    "aiohttp==3.11.11",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.8.4",
+    "pytest==8.3.5",
+    "pytest-custom-exit-code==0.3.0",
+    "pyright==1.1.396",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
