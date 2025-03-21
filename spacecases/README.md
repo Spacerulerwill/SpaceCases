@@ -29,7 +29,7 @@ You can use docker compose to get a quick development setup. Code changes will b
 ```bash
 git clone https://github.com/Spacerulerwill/SpaceCases             # Clone repository
 cd SpaceCases/spacecases                                           # Change to SpaceCases directory
-sudo docker build -t spacecaases -f Dockerfile ../                 # Build SpaceCases docker image
+sudo docker build -t spacecases -f Dockerfile ../                  # Build SpaceCases docker image
 cd ../services/leaderboards                                        # Change to leaderboards directory
 sudo docker build -t spacecases-leaderboards -f Dockerfile ../../  # Build leaderboards docker image
 cd ../../spacecases                                                # Back to SpaceCases
@@ -51,9 +51,9 @@ Use a text editor to fill out the environment variables in the `.env` file.
 ## Native (uv)
 
 ```bash
-uv python install                                       # Install python 
-uv sync                                                 # Download dependencies
-uv run python -m spacecases                             # Run
+uv python install            # Install python 
+uv sync                      # Download dependencies
+uv run python -m spacecases  # Run
 ```
 
 Then you can use whatever scheduling system you like (for example, `crontab`) to periodically generate the leaderboards. The data in the `output` folder can then be served on your chosen domain using your preferred choice of HTTP server.
@@ -63,4 +63,10 @@ Then you can use whatever scheduling system you like (for example, `crontab`) to
 ```bash 
 sudo docker build -t spacecaases -f Dockerfile ../                                                           # Build docker image
 sudo docker run -d -v spacecases-synced:/app/spacecases/synced --env-file .env --name spacecases spacecases  # Run
+```
+
+# Tests
+
+```bash 
+uv run pytest
 ```
