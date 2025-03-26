@@ -9,7 +9,8 @@ class UserNotRegisteredError(discord.app_commands.AppCommandError):
 
 @dataclass
 class InsufficientBalanceError(discord.app_commands.AppCommandError):
-    pass
+    current_balance: int
+    required_balance: int
 
 
 @dataclass

@@ -46,7 +46,7 @@ async def transfer(
             # check we have enough balance
             balance = rows[0]["balance"]
             if balance < cents:
-                raise InsufficientBalanceError
+                raise InsufficientBalanceError(balance, cents)
 
             # give their balance
             rows = await bot.db.fetch_from_file_with_connection(

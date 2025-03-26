@@ -2,7 +2,8 @@ WITH balance_checker AS (
     -- Check if the user has enough balance
     SELECT
         id,
-        balance >= $2 AS has_enough
+        balance >= $2 AS has_enough,
+        balance AS balance_before_transaction
     FROM
         "users"
     WHERE
@@ -21,6 +22,8 @@ updated_user AS (
         "users".id = $1
         AND balance_checker.has_enough
 )
-SELECT has_enough as deducted
-FROM balance_checker;
-
+SELECT 
+    balance_checker.has_enough AS deducted,
+    balance_checker.balance_before_transaction
+FROM 
+    balance_checker;

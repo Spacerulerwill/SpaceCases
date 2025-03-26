@@ -184,8 +184,10 @@ async def open(
         raise UserNotRegisteredError(interaction.user)
 
     # dont have enough
-    if not rows[0]["deducted"]:
-        raise InsufficientBalanceError
+    balance_deducted: bool = rows[0]["deducted"]
+    if not balance_deducted:
+        balance_before_transaction: int = rows[0]["balance_before_transaction"]
+        raise InsufficientBalanceError(balance_before_transaction, price)
 
     # generate probability table (maybe move to asset generation?)
     cumulative_probabilities = {}
@@ -207,7 +209,6 @@ async def open(
         container_entry = random.choice(container.contains[rarity])
 
     # generate the item
-
     match container_entry:
         case SkinContainerEntry():
             # calculate its float value
