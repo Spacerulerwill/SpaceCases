@@ -9,6 +9,7 @@ from spacecases.exceptions import (
     UserInventoryEmptyError,
 )
 from common import get_logger
+from spacecases.strutils import currency_str_format
 
 logger = get_logger(__name__)
 
@@ -18,16 +19,18 @@ async def send_exception_embed(
 ) -> None:
     if isinstance(exception, UserNotRegisteredError):
         if interaction.user.id == exception.user.id:
-            message = "You are **not** registered!!!!!"
+            message = "You are **not** registered!"
         else:
             message = f"{exception.user.display_name} is **not** registered"
         await send_err_embed(interaction, message, ephemeral)
     elif isinstance(exception, InsufficientBalanceError):
-        await send_err_embed(
-            interaction,
-            "You **do not** have sufficient balance for this action",
-            ephemeral,
+        diff = exception.required_balance - exception.current_balance
+        e = discord.Embed(
+            title="You're broke!",
+            description=f"You need **{currency_str_format(diff)}** more to perform this action",
+            color=discord.Color.red(),
         )
+        await interaction.response.send_message(embed=e, ephemeral=ephemeral)
     elif isinstance(exception, ItemDoesNotExistError):
         await send_err_embed(
             interaction, f"Item `{exception.item}` does **not** exist", ephemeral
